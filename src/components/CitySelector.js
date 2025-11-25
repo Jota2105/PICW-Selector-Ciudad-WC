@@ -1,8 +1,79 @@
 const template = document.createElement('template');
 template.innerHTML = `
   <!-- Importamos el archivo CSS externo dentro del shadowRoot -->
-  <!-- Este <link> solo afecta al Shadow DOM, no al documento global -->
-  <link href="style.css" rel="stylesheet">
+    <style>
+    :host {
+      display: block;
+      font-family: Arial, Helvetica, sans-serif;
+      --bg: #fff;
+      --border: #ddd;
+      --accent: #0b76ef;
+      --radius: 8px;
+      --shadow: 0 4px 14px rgba(11,118,239,0.08);
+    }
+    .wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+    }
+    label {
+      display:block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      background: var(--bg);
+      outline: none;
+    }
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(11,118,239,0.08);
+    }
+    .list {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      max-height: 220px;
+      overflow-y: auto;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      z-index: 1000;
+      padding: 6px 0;
+      display: none;
+    }
+    .list[open] { display: block; }
+    .item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #222;
+    }
+    .item[aria-selected="true"],
+    .item:hover {
+      background: rgba(11,118,239,0.06);
+      color: var(--accent);
+    }
+    .hint {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .no-results {
+      padding: 8px 12px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+  </style>
 
   <!-- La estructura visual del componente -->
   <div class="wrapper">
@@ -45,8 +116,8 @@ export class CitySelector extends HTMLElement {
 
     // Guardamos referencias a los elementos internos
     this.$input = this._shadow.getElementById('input');
-    this.$list  = this._shadow.getElementById('list');
-    this.$hint  = this._shadow.getElementById('hint');
+    this.$list = this._shadow.getElementById('list');
+    this.$hint = this._shadow.getElementById('hint');
 
     // ===========================
     //       ESTADO INTERNO
@@ -253,7 +324,7 @@ export class CitySelector extends HTMLElement {
 
     // Si la lista está cerrada pero presiona flechas, la abrimos
     if (!this.$list.hasAttribute('open') &&
-       (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+      (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
       if (len > 0) this._openList();
     }
 
